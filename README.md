@@ -134,3 +134,5 @@ Building and deploying a Go API to Kubernetes.
 Managing deployments with Helm.
 Automating CI/CD with GitHub Actions.
 Debugging live clusters with action-tmate.
+
+s
