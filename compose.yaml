@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  pipeline-example:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pipeline-example
+    ports:
+      - "8080:8080"
+    environment:
+      HELLO_NAME: "Annie"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped

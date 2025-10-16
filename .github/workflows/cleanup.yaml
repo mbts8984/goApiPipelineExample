@@ -1,0 +1,35 @@
+name: Cleanup the cluster
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  cleanup-kind:
+    runs-on: ubuntu-latest
+    env:
+      CLUSTER_NAME: ci-cluster-example
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Kind
+        run: |
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.23.0/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+
+      - name: Delete Kind cluster
+        run: |
+          kind delete cluster
+          if kind get clusters | grep -q "$CLUSTER_NAME"; then
+            echo "🧹 Deleting Kind cluster: $CLUSTER_NAME"
+            kind delete cluster --name "$CLUSTER_NAME"
+          else
+            echo "✅ No existing cluster named $CLUSTER_NAME found — nothing to delete."
+          fi
+
+      - name: Verify cleanup
+        run: |
+          echo "🔍 Checking clusters:"
+          kind get clusters || echo "✅ Cleanup complete — no clusters remain."
